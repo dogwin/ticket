@@ -74,6 +74,12 @@ class Ticket extends CI_Controller{
 		$this->data['title'] = $ticketInfo->taskTitle;
 		$this->load->view('ticket/success',$this->data);
 	}
+	function openexport(){
+		$this->admin_mdl->export();
+	}
+	function closeexport(){
+		$this->admin_mdl->export(6);
+	}
 	function exportclose(){
 		$this->load->view('ticket/exportClose',$this->data);
 	}
