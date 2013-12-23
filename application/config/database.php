@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = 'mysly0725';
-$db['default']['database'] = 'ticketing';
+$db['default']['username'] = 'stage';
+$db['default']['password'] = 'eg2012';
+$db['default']['database'] = 'stage_ticket';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
