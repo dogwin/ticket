@@ -56,10 +56,13 @@ class Ticket extends CI_Controller{
 	}
 	//go to live 
 	function golive(){
+		$this->data['userID'] = $this->data['userInfo']->id;
 		$this->data['ticketID'] = $ticketID = $this->uri->segment(3,0);
 		$ticketInfo = $this->admin_mdl->getInfo('ticket',$ticketID);
+		$this->data['emaillist'] = $this->admin_mdl->vemailList($this->data['userInfo']->id,0);
 		
 		$this->load->view('ticket/golive',$this->data);
+		
 	}
 	function exportnew(){
 		$this->load->view('ticket/exportNew',$this->data);

@@ -159,6 +159,74 @@ class Post extends CI_Controller{
 			exit();
 		}
 	}
+	function addReport(){
+		$userID = $_POST['userID'];
+		$website = implode(":",$_POST['website']);
+		$jobtasktype = $_POST['jobtasktype'];
+		$urgent_value = $_POST['urgent_value'];
+		$tasktitle = $_POST['tasktitle'];
+		$status = $_POST['status'];
+		$changeRequestDescription = $_POST['changeRequestDescription'];
+		$link = $_POST['link'];
+		$datetype = $_POST['datetype'];
+		$standard = $_POST['standard'];
+		$emailList = $_POST['emailList'];
+		if($datetype==0){
+			//today + 5
+			$finishDay = date('Y-m-d',(time()+(5*24*3600)));
+		}else if($datetype==1){
+			$finishDay = $standard;
+		}
+		
+		$ticketData = array(
+				'userID'=>$userID,
+				'website'=>$website,
+				'jobTastType'=>$jobtasktype,
+				'Urgent'=>$urgent_value,
+				'taskTitle'=>$tasktitle,
+				'status'=>$status,
+				'changeRequestDescription'=>$changeRequestDescription,
+				'link'=>$link,
+				'finishDay'=>$finishDay,
+				'date'=>time()
+		);
+		$newReportID = $this->admin_mdl->insertID('report',$ticketData);
+		//print_r($ticketData);
+		//file upload
+		if($newReportID){
+			for($i=1;$i<=5;$i++){
+				$upload_file=$_FILES['file'.$i]['tmp_name'];
+				$upload_file_name=$_FILES['file'.$i]['name'];
+				if($upload_file_name){
+					//uploads
+					$fileN = $this->do_upload($upload_file,$upload_file_name,$i);
+					$fileData = array(
+							'reportID'=>$newReportID,
+							'fileName'=>$fileN,
+							'date'=>time()
+					);
+					$this->admin_mdl->insert('reportuploads',$fileData);
+				}
+			}
+			//email
+			for($j=0;$j<count($emailList);$j++){
+				//echo $emailList[$j]."<br>";
+				$emailData = array(
+						'reportID'=>$newReportID,
+						'ueID'=>$emailList[$j],
+						'date'=>time()
+				);
+				$this->admin_mdl->insert('reportEmail',$emailData);
+			}
+			//get to success page
+			header("location:".base_url('report/index?act=success&reportID='.$newReportID));
+			exit();
+		}else{
+			//return alert error msg
+			header("location:".base_url('report/index?act=failed'));
+			exit();
+		}
+	}
 	function do_upload($uploadFileName,$file_name,$key){
 		$extension = $this->get_extension($file_name);
 		list($usec, $new_name) = explode(" ", microtime());
@@ -173,6 +241,18 @@ class Post extends CI_Controller{
 		$status = $this->input->post('status');
 		$staginglink = $this->input->post('staginglink');
 		if($this->admin_mdl->update('ticket',array('status'=>$status,'staginglink'=>$staginglink),array('id'=>$ticketID))){
+			$array = array('flag'=>true);
+		}else{
+			$array = array('flag'=>true,'msg'=>'Faild');
+		}
+		echo json_encode($array);
+	}
+	//report
+	function updateReport(){
+		$reportID = $this->input->post('reportID');
+		$status = $this->input->post('status');
+		$staginglink = $this->input->post('staginglink');
+		if($this->admin_mdl->update('report',array('status'=>$status,'staginglink'=>$staginglink),array('id'=>$reportID))){
 			$array = array('flag'=>true);
 		}else{
 			$array = array('flag'=>true,'msg'=>'Faild');
@@ -218,11 +298,80 @@ class Post extends CI_Controller{
 		}
 		
 	}
+	function reportcomment(){
+		//print_r($_POST);
+		$userID = $_POST['userID'];
+		$reportID = $_POST['reportID'];
+		$comment = $_POST['comment'];
+		$data = array(
+				'reportID'=>$reportID,
+				'userID'=>$userID,
+				'comment'=>$comment,
+				'date'=>time()
+		);
+		$commentID = $this->admin_mdl->RinsertID('reportComment',$data);
+		if($commentID){
+				
+			for($i=1;$i<=5;$i++){
+				$upload_file=$_FILES['file'.$i]['tmp_name'];
+				$upload_file_name=$_FILES['file'.$i]['name'];
+				if($upload_file_name){
+					//uploads
+					$fileN = $this->do_upload($upload_file,$upload_file_name,$i);
+					$fileData = array(
+							'commentID'=>$commentID,
+							'fileName'=>$fileN,
+							'date'=>time()
+					);
+					$this->admin_mdl->insert('reportuploads',$fileData);
+				}
+			}
+			//go to ticket index
+			header("location:".base_url('report/index'));
+			exit();
+		}else{
+			//go to ticket index
+			header("location:".base_url('report/index'));
+			exit();
+		}
+	
+	}
+	function reportFile(){
+		$reportID = $_POST['reportID'];
+		$upload_file=$_FILES['file']['tmp_name'];
+		$upload_file_name=$_FILES['file']['name'];
+		if($upload_file_name){
+			//uploads
+			$fileN = $this->do_upload($upload_file,$upload_file_name,0);
+			if($this->admin_mdl->update('report',array('file'=>$fileN),array('id'=>$reportID))){
+				header("location:".base_url('report/index'));
+				exit();
+			}else{
+				header("location:".base_url('report/index'));
+				exit();
+			}
+		}else{
+			header("location:".base_url('report/index'));
+			exit();
+		}
+	}
 	function download(){
 		$id = $this->uri->segment(3,1);
 		$info = $this->admin_mdl->getInfo('uploads',$id);
 		$file = base_url().$info->fileName;
 		$fileNArr = explode('file/',$info->fileName);
+		//$array = array('info'=>$this->classics_mdl->getInfo('dw_classics',$id));
+		//echo json_encode($array);
+		//$filename = $info->bookName;
+		header("Content-type: application/x-file-to-save");
+		header("Content-Disposition: attachment; filename=".$fileNArr[1]);//.basename($file));
+		readfile($file);
+	}
+	function reportdownload(){
+		$id = $this->uri->segment(3,1);
+		$info = $this->admin_mdl->getInfo('report',$id);
+		$file = base_url().$info->file;
+		$fileNArr = explode('file/',$info->file);
 		//$array = array('info'=>$this->classics_mdl->getInfo('dw_classics',$id));
 		//echo json_encode($array);
 		//$filename = $info->bookName;
@@ -283,6 +432,18 @@ class Post extends CI_Controller{
 		$pages=intval($numrows/$pagesize);
 		$offset = ($page-1)*$pagesize;
 		$commlist = $this->admin_mdl->pageCommList($ticketID,$offset,$pagesize);
+		$array = array('commlist'=>$commlist);
+		echo json_encode($array);
+	}
+	//load report comment
+	function loadreportComm(){
+		$reportID = $this->input->post('reportID');
+		$page = $this->input->post('page');
+		$numrows = $this->admin_mdl->commcount($reportID);
+		$pagesize = 5;
+		$pages=intval($numrows/$pagesize);
+		$offset = ($page-1)*$pagesize;
+		$commlist = $this->admin_mdl->pagereportCommList($reportID,$offset,$pagesize);
 		$array = array('commlist'=>$commlist);
 		echo json_encode($array);
 	}

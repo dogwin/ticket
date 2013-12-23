@@ -57,6 +57,30 @@ class Admin_mdl extends CI_Model{
 		}
 		return $commentlist;
 	}
+	//report comment
+	function pagereportCommList($reportID,$offset,$pagesize){
+		$commentlist = "";
+		$sql = "select * from reportComment where reportID='$reportID' order by id DESC limit $offset,$pagesize";
+	
+		$query = $this->db->query($sql);
+		if($query->num_rows()){
+			foreach ($query->result() as $row){
+				$userInfo = $this->getInfo('admin_user',$row->userID);
+	
+				$commentlist.='<div class="ld_comment_list">
+		        	<div class="ld_comment_list_img"><img src="'.base_url().'images/default_img.jpg" alt=""  /></div>
+		            <div class="ld_comment_list_content">
+		            	<h5>'.$userInfo->firstName.' '.$userInfo->lastName.' <span>'.date('d/m/Y',$row->date).'</span></h5>
+		                <p>'.$row->comment.'</p>
+		                '.$this->attachedFiles($row->id).'
+		            </div>
+		            <div class="clear"></div>
+		        </div>';
+			}
+	
+		}
+		return $commentlist;
+	}
 	
 	function usercount(){
 		$sql = "select * from admin_user";
@@ -283,6 +307,31 @@ class Admin_mdl extends CI_Model{
 		}
 		return $commentlist;
 	}
+	
+	//report comment
+	function reportcommentlist($reportID,$limit){
+		$commentlist = '';
+		$sql = "select * from reportComment where reportID='$reportID' order by id DESC limit $limit";
+		$query = $this->db->query($sql);
+		if($query->num_rows()){
+			foreach ($query->result() as $row){
+				$userInfo = $this->getInfo('admin_user',$row->userID);
+	
+				$commentlist.='<div class="ld_comment_list">
+		        	<div class="ld_comment_list_img"><img src="'.base_url().'images/default_img.jpg" alt=""  /></div>
+		            <div class="ld_comment_list_content">
+		            	<h5>'.$userInfo->firstName.' '.$userInfo->lastName.' <span>'.date('d/m/Y',$row->date).'</span></h5>
+		                <p>'.$row->comment.'</p>
+		                '.$this->attachedFiles($row->id).'
+		            </div>
+		            <div class="clear"></div>
+		        </div>';
+			}
+				
+		}
+		return $commentlist;
+	}
+	
 	function attachedFiles($comID){
 		$attachedFiles = '';
 		$sql = "select * from uploads where commentID = '$comID'";
