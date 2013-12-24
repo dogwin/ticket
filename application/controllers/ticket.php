@@ -23,6 +23,7 @@ class Ticket extends CI_Controller{
 	function index(){
 		$this->loggin();
 		//ticket list
+		$this->data['authLevel'] =  $this->data['userInfo']->authLevel;
 		$this->data['ticketList'] = $this->admin_mdl->tickets($this->data['userInfo']->id);
 		$this->data['closeTicketList'] = $this->admin_mdl->ticketsClose($this->data['userInfo']->id);
 		$this->load->view("index",$this->data);
@@ -52,6 +53,7 @@ class Ticket extends CI_Controller{
 		$this->data['userID'] = $this->data['userInfo']->id;
 		//comment list 5
 		$this->data['commentList'] = $this->admin_mdl->commentlist($ticketID,5);
+		$this->data['authLevel'] =  $this->data['userInfo']->authLevel;
 		$this->load->view('ticket/open',$this->data);
 	}
 	//go to live 

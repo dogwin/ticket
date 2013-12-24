@@ -10,6 +10,7 @@ class Post extends CI_Controller{
 		$this->load->helper(array('file','url','cookie'));
 		$this->load->library(array('session','parser','email','image_lib','phpmail','user_agent','pagination','calendar'));
 		$this->load->model(array('auth_mdl','admin_mdl'));
+		$this->data['userInfo'] = $this->auth_mdl->getUserInfo();
 	}
 	function login(){
 		$email = $this->input->post('email');
@@ -150,6 +151,26 @@ class Post extends CI_Controller{
 						);
 				$this->admin_mdl->insert('ticketEmail',$emailData);
 			}
+			/**
+			 * send email
+			 * 1.the owner
+			 * 2.email list
+			 * 
+			 */
+			$to = $this->data['userInfo']->email;
+			$sender = "no-replay@gmail.com";
+			$subject = "Create a new ticket";
+			$message = 'Client Creates a ticket.';
+			$title = 'No-replay';
+			$this->phpmail->send_email($to, $sender, $subject, $message,$title);
+			
+			$sendTicketEM = $this->admin_mdl->sendTicketEM($newTicketID);
+			if(count($sendTicketEM)){
+				foreach($sendTicketEM as $emObj){
+					$this->phpmail->send_email($emObj->email, $sender, $subject, $message,$title);
+				}
+			}
+			
 			//get to success page
 			header("location:".base_url('ticket/index?act=success&ticketID='.$newTicketID));
 			exit();
@@ -218,7 +239,31 @@ class Post extends CI_Controller{
 				);
 				$this->admin_mdl->insert('reportEmail',$emailData);
 			}
+			
+			/**
+			 * send email
+			 * 1.the owner
+			 * 2.email list
+			 *
+			 */
+			$owninfo = $this->admin_mdl->theOwner($newReportID,'report');
+			$to = $owninfo->email;
+			$sender = "no-replay@gmail.com";
+			$subject = "Create a new ticket";
+			$message = 'Client Creates a ticket.';
+			$title = 'No-replay';
+			$this->phpmail->send_email($to, $sender, $subject, $message,$title);
+				
+			$sendTicketEM = $this->admin_mdl->sendReportEM($newReportID,3);
+			if(count($sendTicketEM)){
+				foreach($sendTicketEM as $emObj){
+					$this->phpmail->send_email($emObj->email, $sender, $subject, $message,$title);
+				}
+			}
+			
+			
 			//get to success page
+			
 			header("location:".base_url('report/index?act=success&reportID='.$newReportID));
 			exit();
 		}else{
@@ -240,7 +285,40 @@ class Post extends CI_Controller{
 		$ticketID = $this->input->post('ticketID');
 		$status = $this->input->post('status');
 		$staginglink = $this->input->post('staginglink');
+		$change = $this->input->post('change');
 		if($this->admin_mdl->update('ticket',array('status'=>$status,'staginglink'=>$staginglink),array('id'=>$ticketID))){
+			if($change==1){
+				//email list
+				if($status==3){
+					$sender = "no-replay@gmail.com";
+					$subject = "due for internal review";
+					$message = 'due for internal review.';
+					$title = 'No-replay';
+					
+					$sendTicketEM = $this->admin_mdl->sendTicketEM($ticketID);
+					if(count($sendTicketEM)){
+						foreach($sendTicketEM as $emObj){
+							$this->phpmail->send_email($emObj->email, $sender, $subject, $message,$title);
+						}
+					}
+				}
+				if($status==4){
+					$owninfo = $this->admin_mdl->theOwner($ticketID,'ticket');
+					$to = $owninfo->email;
+					$sender = "no-replay@gmail.com";
+					$subject = "due for clinet\'s review";
+					$message = 'due for clinet\'s review.';
+					$title = 'No-replay';
+					$this->phpmail->send_email($to, $sender, $subject, $message,$title);
+					
+					$sendTicketEM = $this->admin_mdl->sendTicketEM($ticketID,3);
+					if(count($sendTicketEM)){
+						foreach($sendTicketEM as $emObj){
+							$this->phpmail->send_email($emObj->email, $sender, $subject, $message,$title);
+						}
+					}
+				}
+			}
 			$array = array('flag'=>true);
 		}else{
 			$array = array('flag'=>true,'msg'=>'Faild');
@@ -288,6 +366,25 @@ class Post extends CI_Controller{
 					$this->admin_mdl->insert('uploads',$fileData);
 				}
 			}
+			/**
+			 * 
+			 * 
+			 */
+			$owninfo = $this->admin_mdl->theOwner($ticketID,'ticket');
+			$to = $owninfo->email;
+			$sender = "no-replay@gmail.com";
+			$subject = "comment";
+			$message = 'comments';
+			$title = 'No-replay';
+			$this->phpmail->send_email($to, $sender, $subject, $message,$title);
+			//email list
+			$sendTicketEM = $this->admin_mdl->sendTicketEM($ticketID);
+			if(count($sendTicketEM)){
+				foreach($sendTicketEM as $emObj){
+					$this->phpmail->send_email($emObj->email, $sender, $subject, $message,$title);
+				}
+			}
+			//end send email
 			//go to ticket index
 			header("location:".base_url('ticket/index'));
 			exit();
@@ -324,6 +421,26 @@ class Post extends CI_Controller{
 							'date'=>time()
 					);
 					$this->admin_mdl->insert('reportuploads',$fileData);
+				}
+			}
+			/**
+			 * send email
+			 * 1.the owner
+			 * 2.email list
+			 *
+			 */
+			$owninfo = $this->admin_mdl->theOwner($reportID,'report');
+			$to = $owninfo->email;
+			$sender = "no-replay@gmail.com";
+			$subject = "Create a new ticket";
+			$message = 'Client Creates a ticket.';
+			$title = 'No-replay';
+			$this->phpmail->send_email($to, $sender, $subject, $message,$title);
+			
+			$sendTicketEM = $this->admin_mdl->sendReportEM($reportID,3);
+			if(count($sendTicketEM)){
+				foreach($sendTicketEM as $emObj){
+					$this->phpmail->send_email($emObj->email, $sender, $subject, $message,$title);
 				}
 			}
 			//go to ticket index
@@ -369,6 +486,29 @@ class Post extends CI_Controller{
 	}
 	function reportdownload(){
 		$id = $this->uri->segment(3,1);
+		
+		/**
+		 * send email
+		 * 1.the owner
+		 * 2.email list
+		 *
+		 */
+		$owninfo = $this->admin_mdl->theOwner($id,'report');
+		$to = $owninfo->email;
+		$sender = "no-replay@gmail.com";
+		$subject = "Create a new ticket";
+		$message = 'Client Creates a ticket.';
+		$title = 'No-replay';
+		$this->phpmail->send_email($to, $sender, $subject, $message,$title);
+			
+		$sendTicketEM = $this->admin_mdl->sendReportEM($id,3);
+		if(count($sendTicketEM)){
+			foreach($sendTicketEM as $emObj){
+				$this->phpmail->send_email($emObj->email, $sender, $subject, $message,$title);
+			}
+		}
+		
+		
 		$info = $this->admin_mdl->getInfo('report',$id);
 		$file = base_url().$info->file;
 		$fileNArr = explode('file/',$info->file);
@@ -445,6 +585,33 @@ class Post extends CI_Controller{
 		$offset = ($page-1)*$pagesize;
 		$commlist = $this->admin_mdl->pagereportCommList($reportID,$offset,$pagesize);
 		$array = array('commlist'=>$commlist);
+		echo json_encode($array);
+	}
+	//ticket golive
+	function golive(){
+		$userID = $this->input->post('userID');
+		$ticketID = $this->input->post('ticketID');
+		$postcode = $this->input->post('postcode');
+		$eml = substr($this->input->post('eml'), 0, -1);
+		$emArr = explode(":",$eml);
+		if($postcode=='00001'){
+			$owninfo = $this->admin_mdl->theOwner($ticketID,'ticket');
+			$to = $owninfo->email;
+			$sender = "no-replay@gmail.com";
+			$subject = "go live now";
+			$message = 'go live now.';
+			$title = 'No-replay';
+			$this->phpmail->send_email($to, $sender, $subject, $message,$title);
+			if(count($emArr)){
+				foreach ($emArr as $emID){
+					$emailInfo = $this->admin_mdl->getInfo('userEmail',$emID);
+					$this->phpmail->send_email($emailInfo->email, $sender, $subject, $message,$title);
+				}
+			}
+			$array = array('flag'=>true,'url'=>base_url('ticket'));
+		}else{
+			$array = array('flag'=>false,'msg'=>'Enter Client Authorisation ID incorrect');
+		}
 		echo json_encode($array);
 	}
 }

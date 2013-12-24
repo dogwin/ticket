@@ -37,7 +37,7 @@
         <!-- 
         <a href="#" target="_blank" class="c01">http://www.test.com/testing.html</a>
         --></div>
-        
+        <?php if($authLevel!=1){?>
         <div class="ld_golivenow">
         <?php echo $fileName;?>
         <form id="reportForm" method="POST" enctype="multipart/form-data">
@@ -47,7 +47,7 @@
         <input type="button" id="reportbt" value="Upload Report" class="btn"/>
         </form>
         </div>
-        
+        <?php }?>
         <form id="goliveForm" method="POST" enctype="multipart/form-data">
         <h3 class="ld_tit">Changes/Comments/Feedback</h3>
         <div class="ld_comment">

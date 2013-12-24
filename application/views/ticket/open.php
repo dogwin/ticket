@@ -38,7 +38,11 @@
         <a href="#" target="_blank" class="c01">http://www.test.com/testing.html</a>
         --></div>
         <form id="goliveForm" method="POST" enctype="multipart/form-data">
-        <div class="ld_golivenow"><input type="button" value="Go Live Now" class="btn" onclick="location.href='<?php echo base_url('ticket/index?act=golive&ticketID='.$ticketID);?>'"/></div>
+       	<?php if($authLevel==1){?>
+        <div class="ld_golivenow">
+        	<input type="button" value="Go Live Now" class="btn" onclick="location.href='<?php echo base_url('ticket/index?act=golive&ticketID='.$ticketID);?>'"/>
+        </div>
+        <?php }?>
         <h3 class="ld_tit">Changes/Comments/Feedback</h3>
         <div class="ld_comment">
         	<textarea  class="ld_comment_txt" id="comment" name="comment" rows="6" placeholder="Type here..."></textarea>
@@ -89,13 +93,15 @@ $(document).ready(function(){
 		var status = $(this).val();
 		var ticketID = $("#ticketID").val();
 		var staginglink = $("#staginglink").val();
-		resetV(ticketID,status,staginglink);
+		var change = 1;
+		resetV(ticketID,status,staginglink,change);
 	});
 	$("#staginglink").blur(function(){
 		var status = $(this).val();
 		var ticketID = $("#ticketID").val();
 		var staginglink = $("#staginglink").val();
-		resetV(ticketID,status,staginglink);
+		var change = 0;
+		resetV(ticketID,status,staginglink,change);
 	});
 	//add comment
 	$("#commentbt").live('click',function(){
@@ -109,7 +115,7 @@ $(document).ready(function(){
 		//
 	});
 });
-function resetV(ticketID,status,staginglink){
+function resetV(ticketID,status,staginglink,change){
 	$.ajax({
 		type:'POST',
 		url:'<?php echo base_url('post/updateTicket');?>',
@@ -118,7 +124,8 @@ function resetV(ticketID,status,staginglink){
 		data:{
 			ticketID:ticketID,
 			status:status,
-			staginglink:staginglink
+			staginglink:staginglink,
+			change:change
 		},
 		success:function(data){
 			console.log(data);	

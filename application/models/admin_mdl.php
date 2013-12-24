@@ -228,7 +228,8 @@ class Admin_mdl extends CI_Model{
 	//
 	function tickets($userID){
 		$ticketList = "";
-		$sql = "select * from ticket where userID='$userID' and status!=6";
+		//$sql = "select * from ticket where userID='$userID' and status!=6";
+		$sql = "select * from ticket where status!=6";
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
@@ -256,7 +257,8 @@ class Admin_mdl extends CI_Model{
 	}
 	function ticketsClose($userID){
 		$ticketList = "";
-		$sql = "select * from ticket where userID='$userID' and status=6";
+		//$sql = "select * from ticket where userID='$userID' and status=6";
+		$sql = "select * from ticket where status=6";
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
@@ -393,6 +395,29 @@ class Admin_mdl extends CI_Model{
 		header('Expires:0');
 		header('Pragma:public');
 		echo $data;
+	}
+	//ticket email list
+	function sendTicketEM($ticketID,$exauthLevel=''){
+		$sql = "select * from admin_user where id = (select userID from userEmail where id = (select ueID from ticketEmail where ticketID = '$ticketID'))";
+		if($exauthLevel){
+			$sql.=" and authLevel!='$exauthLevel'";
+		}
+		$query  = $this->db->query($sql);
+		return $query->result();
+	}
+	function sendReportEM($reportID,$exauthLevel=''){
+		$sql = "select * from admin_user where id = (select userID from userEmail where id = (select ueID from reportEmail where reportID = '$reportID'))";
+		if($exauthLevel){
+			$sql.=" and authLevel!='$exauthLevel'";
+		}
+		$query  = $this->db->query($sql);
+		return $query->result();
+	}
+	//the ticket owner
+	function theOwner($ID,$tb){
+		$sql = "select * from admin_user where id=(select userID from $tb where id='$ID')";
+		$query = $this->db->query($sql);
+		return $query->row();
 	}
 	/**
 	 * base db function

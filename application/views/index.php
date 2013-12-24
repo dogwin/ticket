@@ -1,7 +1,11 @@
 <?php echo $header;?>
 <div id="center">
 	<div class="main">
-    	<div class="center_control"><a href="<?php echo base_url("ticket/edit/0");?>" class="btn popup-with-zoom-anim">New Request</a><h2>Open Tickets</h2></div>
+    	<div class="center_control">
+    	<?php if($authLevel==1){?>
+    	<a href="<?php echo base_url("ticket/edit/0");?>" class="btn popup-with-zoom-anim">New Request</a><h2>Open Tickets</h2>
+    	<?php }?>
+    	</div>
         <table cellpadding="0" cellspacing="0" border="0" class="c_table">
         	<tr>
             	<th width="82">Ticket Number</th>

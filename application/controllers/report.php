@@ -21,6 +21,7 @@ class Report extends CI_Controller{
 	}
 	function index(){
 		$this->loggin();
+		$this->data['authLevel'] =  $this->data['userInfo']->authLevel;
 		$this->data['reportList'] = $this->report_mdl->reports($this->data['userInfo']->id);
 		$this->data['closereportList'] = $this->report_mdl->reportsClose($this->data['userInfo']->id);
 		$this->load->view('report/index',$this->data);
@@ -57,6 +58,7 @@ class Report extends CI_Controller{
 		$this->data['link'] = $reportInfo->link;
 		$this->data['status'] = $this->admin_mdl->getStatus($reportInfo->status);
 		$this->data['stagingLink'] = $reportInfo->stagingLink;
+		$this->data['authLevel'] =  $this->data['userInfo']->authLevel;
 		if($reportInfo->file){
 			$fileArr = explode('file/',$reportInfo->file);
 			$this->data['fileName'] = '<a href="'.base_url('post/reportdownload/'.$this->data['reportID']).'" class="c01" >'.$fileArr[1].'</a>';

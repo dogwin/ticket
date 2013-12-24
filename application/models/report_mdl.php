@@ -12,7 +12,8 @@ class Report_mdl extends CI_Model{
 	//Reports Requested
 	function reports($userID){
 		$reportList = "";
-		$sql = "select * from report where userID='$userID' and status!=6";
+		//$sql = "select * from report where userID='$userID' and status!=6";
+		$sql = "select * from report where status!=6";
 		$query = $this->db->query($sql);
 		
 		if($query->num_rows()){
@@ -43,19 +44,26 @@ class Report_mdl extends CI_Model{
 	//Reports for Download
 	function reportsClose($userID){
 		$reportList = "";
-		$sql = "select * from report where userID='$userID' and status=6";
+		//$sql = "select * from report where userID='$userID' and status=6";
+		$sql = "select * from report where status=6";
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
+				
 				$d = date('j F Y',strtotime($row->finishDay));
 				$c = ( strtotime($row->finishDay) - strtotime(date('Y-m-d')) )/(24*3600);
+				if($row->file){
+					$down = '<a href="'.base_url('post/reportdownload/'.$row->id).'" class="btn">Download</a>';
+				}else{
+					$down = '';
+				}
 				$reportList.='<tr>
             	<td>'.$this->newID($row->id).'</td>
                 <td>'.$row->taskTitle.'</td>
                 <td>'.$d.'</td>
                 <td>'.$c.'</td>
                 <td>'.($row->Urgent==0?'Y':'N').'</td>
-                <td><a href="#" class="btn">Download</a></td>
+                <td>'.$down.'</td>
             </tr>';
 			}
 		}
