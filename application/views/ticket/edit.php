@@ -82,6 +82,7 @@
         <div class="ld_info">
         	<h3>Live Alert / Notification</h3>
             <div class="ld_mail_list">
+            	<p class='el' style='width:0px;height:0px;padding:0;margin:0;border:0px;'></p>
             	<?php echo $emaillist;?>
                 <div class="clear"></div>
             </div>
@@ -115,6 +116,7 @@ $(document).ready(function(){
 	$("#addemailbt").click(function(){
 		var email = $("#key").val();
 		var userID = $("#userID").val();
+		var adminAdd = 1;
 		if(!re.test(email)){
 			$("#errormsg").html("Please input email.");
 		}else{
@@ -126,13 +128,15 @@ $(document).ready(function(){
 				data:{
 					email:email,
 					userID:userID,
-					type:2
+					type:2,
+					adminAdd:adminAdd
 				},
 				success:function(data){
 					console.log(data);	
 					if(data.flag){
 						//location.href=data.url;
-						$(".ld_mail_list").html(data.emaillist+'<div class="clear"></div>');
+						//$(".ld_mail_list").html(data.emaillist+'<div class="clear"></div>');
+						$(".ld_mail_list .el").last().after(data.emaillist);
 						$("#key").val('');
 					}else{
 						//show error

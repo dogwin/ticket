@@ -74,13 +74,13 @@ function uv(i)
         <div id="menu">
         	<ul>
             	<li><a href="<?php if($userInfo->id==1){ echo "#";}else{  echo base_url('report');}?>">Report Downloads</a></li>
-                <li><a href="<?php echo base_url('admin');?>">User Management</a></li>
+                <li><a href="<?php echo base_url('admin');?>"><?php echo $userInfo->authLevel==0?"User Management":"My Account";?></a></li>
             </ul>
         </div>
         <div id="h_login">
         	<div id="defalut_img"><!-- <a href="#"><img src="images/default_img.jpg" alt="" /></a>--></div>
             <div id="h_login_txt">
-            	<p>Welcome <a href="#"><?php echo $name;?></a></p>
+            	<p>Welcome <a href="#"><?php echo $name." (".$roleName.")";?></a></p>
                 <p><input type="button" class="btn" value="Logout" onclick="location.href='<?php echo base_url("ticket/logout")?>'"/></p>
             </div>
         </div>

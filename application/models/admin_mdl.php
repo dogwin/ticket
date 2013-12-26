@@ -9,26 +9,45 @@ class Admin_mdl extends CI_Model{
 		parent::__construct();
 		$this->load->database();
 	}
-	function userList($limit='10'){
+	function userList($limit='10',$orderData=''){
 		$userList = '';
-		$sql = "select * from admin_user limit ".$limit;
+		$sql = "select * from admin_user";//
+		if($orderData){
+			$sql.=" order by firstName $orderData";
+		}
+		$sql.=" limit ".$limit;
+		
 		$query = $this->db->query($sql);
 		
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
-				$userList.='<li><a class="name" href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->firstName.' '.$row->lastName.'</a><a href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->email.'</a></li>';
+				if($row->authLevel!=0){
+					$bt = '<input type="button" class="btn" value="Delete" onclick="delUser('.$row->id.')">';
+				}else{
+					$bt = '';
+				}
+				$userList.='<li><a class="name" href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->firstName.' '.$row->lastName.' ('.$this->RoleName($row->authLevel).')'.'</a><a href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->email.'</a>'.$bt.'</li>';
 				//$userList.='<li class="useritem"><i>'.$this->authLevel($row->authLevel).'</i><i><a href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->firstName.' '.$row->lastName.'</a></i><i>'.$row->email.'</i></li>';
 			}
 		}
 		return $userList;
 	}
-	function pageUserList($offset,$pagesize){
+	function pageUserList($offset,$pagesize,$orderData=''){
 		$userList = '';
-		$sql = "select * from admin_user limit $offset,$pagesize";
+		$sql = "select * from admin_user";//
+		if($orderData){
+			$sql.=" order by firstName $orderData";
+		}
+		$sql.=" limit $offset,$pagesize";
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
-				$userList.='<li><a class="name" href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->firstName.' '.$row->lastName.'</a><a href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->email.'</a></li>';
+				if($row->authLevel!=0){
+					$bt = '<input type="button" class="btn" value="Delete" onclick="delUser('.$row->id.')">';
+				}else{
+					$bt = '';
+				}
+				$userList.='<li><a class="name" href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->firstName.' '.$row->lastName.' ('.$this->RoleName($row->authLevel).'</a><a href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->email.'</a>'.$bt.'</li>';
 			}
 		}
 		return $userList;
@@ -112,6 +131,15 @@ class Admin_mdl extends CI_Model{
 		$roleSelect.="</select>";
 		return $roleSelect;
 	}
+	function RoleName($key){
+		$array = array(
+				'0'=>'Administrator',
+				'1'=>'Client',
+				'2'=>'Agency',
+				'3'=>'Developer'
+		);
+		return $array[$key];
+	}
 	//email exist
 	function checkEmail($email){
 		$sql = "select * from admin_user where email='$email'";
@@ -181,7 +209,23 @@ class Admin_mdl extends CI_Model{
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
-				$emailList .= '<p><input type="checkbox" class="emailList" name="emailList[]" value="'.$row->id.'"><a href="#">'.$row->email.'</a></p>';
+				$emailList .= '<p class="el"><input type="checkbox" class="emailList" name="emailList[]" value="'.$row->id.'"><a href="#">'.$row->email.'</a></p>';
+			}
+		}
+		return $emailList;
+	}
+	function reportvemailList($userID,$reportID=''){
+		$emailList = "";
+		$sql = "select * from userEmail where userID='$userID' and ";//ticketID in (0,$ticketID))";
+		if($reportID){
+			$sql.="reportID in (0,$reportID))";
+		}else{
+			$sql.= "reportID = 0";
+		}
+		$query = $this->db->query($sql);
+		if($query->num_rows()){
+			foreach ($query->result() as $row){
+				$emailList .= '<p class="el"><input type="checkbox" class="emailList" name="emailList[]" value="'.$row->id.'"><a href="#">'.$row->email.'</a></p>';
 			}
 		}
 		return $emailList;
@@ -198,10 +242,15 @@ class Admin_mdl extends CI_Model{
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
-				$emailList .= '<p><i onclick="emailDel('.$row->id.',this)">X</i><a href="#">'.$row->email.'</a></p>';
+				$emailList .= '<p class="el"><i onclick="emailDel('.$row->id.',this)">X</i><a href="#">'.$row->email.'</a></p>';
 			}
 		}
 		return $emailList;
+	}
+	function RenewEmail($emID){
+		$userEmailInfo = $this->getInfo('userEmail',$emID);
+		$email = '<p><input type="checkbox" class="emailList" name="emailList[]" value="'.$emID.'"><a href="#">'.$userEmailInfo->email.'</a></p>';
+		return $email;
 	}
 	function autocom($key){
 		$RSS = array();
@@ -265,7 +314,7 @@ class Admin_mdl extends CI_Model{
 				$d = date('j F Y',strtotime($row->finishDay));
 				$c = ( strtotime($row->finishDay) - strtotime(date('Y-m-d')) )/(24*3600);
 				$ticketList.='<tr>
-            	<td>'.$this->newID($row->id).'</td>
+            	<td><a href="'.base_url('ticket/open/'.$row->id).'" class="popup-with-zoom-anim">'.$this->newID($row->id).'</a></td>
                 <td>'.$row->taskTitle.'</td>
                 <td>'.$d.'</td>
                 <td>'.$c.'</td>
@@ -398,7 +447,7 @@ class Admin_mdl extends CI_Model{
 	}
 	//ticket email list
 	function sendTicketEM($ticketID,$exauthLevel=''){
-		$sql = "select * from admin_user where id = (select userID from userEmail where id = (select ueID from ticketEmail where ticketID = '$ticketID'))";
+		$sql = "select * from admin_user where id in (select userID from userEmail where id in (select ueID from ticketEmail where ticketID = '$ticketID'))";
 		if($exauthLevel){
 			$sql.=" and authLevel!='$exauthLevel'";
 		}
@@ -406,7 +455,7 @@ class Admin_mdl extends CI_Model{
 		return $query->result();
 	}
 	function sendReportEM($reportID,$exauthLevel=''){
-		$sql = "select * from admin_user where id = (select userID from userEmail where id = (select ueID from reportEmail where reportID = '$reportID'))";
+		$sql = "select * from admin_user where id in (select userID from userEmail where id in (select ueID from reportEmail where reportID = '$reportID'))";
 		if($exauthLevel){
 			$sql.=" and authLevel!='$exauthLevel'";
 		}

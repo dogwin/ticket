@@ -15,6 +15,7 @@ class Report extends CI_Controller{
 			$data['userInfo'] = $this->data['userInfo'] = $userInfo = $this->auth_mdl->getUserInfo();
 			$data['name'] =$userInfo->firstName.".".$userInfo->lastName;
 			//header
+			$data['roleName'] = $this->admin_mdl->RoleName($userInfo->authLevel);
 			$this->data['header'] = $this->load->view("global/header",$data,true);
 			$this->data['footer'] = $this->load->view("global/footer",$data,true);
 		}
@@ -34,7 +35,7 @@ class Report extends CI_Controller{
 		//status
 		$this->data['status'] = $this->admin_mdl->getStatus();
 		//email list
-		$this->data['emaillist'] = $this->admin_mdl->vemailList($this->data['userInfo']->id,0);
+		$this->data['emaillist'] = $this->admin_mdl->reportvemailList($this->data['userInfo']->id,0);
 		//echo $this->data['emaillist'];
 		$this->data['userID'] = $this->data['userInfo']->id;
 		$this->load->view('report/edit',$this->data);

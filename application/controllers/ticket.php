@@ -15,6 +15,7 @@ class Ticket extends CI_Controller{
 			$data['userInfo'] = $this->data['userInfo'] = $userInfo = $this->auth_mdl->getUserInfo();
 			$data['name'] =$userInfo->firstName.".".$userInfo->lastName;
 			//header
+			$data['roleName'] = $this->admin_mdl->RoleName($userInfo->authLevel);
 			$this->data['header'] = $this->load->view("global/header",$data,true);
 			$this->data['footer'] = $this->load->view("global/footer",$data,true);
 		}

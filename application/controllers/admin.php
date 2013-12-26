@@ -16,16 +16,20 @@ class Admin extends CI_Controller{
 			$data['name'] =$userInfo->firstName.".".$userInfo->lastName;
 			//header
 			
-			$this->data['header'] = $this->load->view("global/header",$data);
-			$this->data['footer'] = $this->load->view("global/footer");
+			$data['roleName'] = $this->admin_mdl->RoleName($userInfo->authLevel);
+			$this->data['header'] = $this->load->view("global/header",$data,true);
+			$this->data['footer'] = $this->load->view("global/footer",$data,true);
 			$this->data['roleName'] = array(1=>'Client',2=>'Agency',3=>'Developer');
 		}
 	}
 	
 	//user management
 	function index(){
+		
 		$this->loggin();
 		$userInfo = $this->auth_mdl->getUserInfo();
+		//
+		$this->data['orderData'] = $orderData = $this->uri->segment(3,'');
 		/*
 		 * 0 admin
 		* 1 client
@@ -35,7 +39,7 @@ class Admin extends CI_Controller{
 		if($userInfo->authLevel==0){
 			//admin pannel
 			//user list
-			$this->data['userList'] = $this->admin_mdl->userList(10);
+			$this->data['userList'] = $this->admin_mdl->userList(10,$orderData);
 				
 			$this->load->view("admin/index",$this->data);
 		}else{
@@ -88,11 +92,13 @@ class Admin extends CI_Controller{
 	}
 	function loaduser(){
 		$page = $this->input->post('page');
+		$orderData = $this->input->post('orderData');
+		
 		$numrows = $this->admin_mdl->usercount();
 		$pagesize = 10;
 		$pages=intval($numrows/$pagesize);
 		$offset = ($page-1)*$pagesize;
-		$userlist = $this->admin_mdl->pageUserList($offset,$pagesize);
+		$userlist = $this->admin_mdl->pageUserList($offset,$pagesize,$orderData);
 		$array = array('userlist'=>$userlist);
 		echo json_encode($array);
 	}
@@ -101,6 +107,18 @@ class Admin extends CI_Controller{
 			header('location:'.base_url("ticket/login"));
 			exit();
 		}
+	}
+	function delUser(){
+		$id = $this->input->post('id');
+		$orderData = $this->input->post('orderData');
+		
+		if($this->admin_mdl->delete('admin_user',array('id'=>$id))){
+			$array = array('flag'=>true,'url'=>base_url('admin/index/'.$orderData));
+		}else{
+			$array = array('flag'=>false,'msg'=>'Delete failed');
+		}
+		echo json_encode($array);
+		
 	}
 }
 /*End the file admin.php*/

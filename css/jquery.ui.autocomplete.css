@@ -58,3 +58,6 @@
 	background-color:#fff;
 	background-repeat:no-repeat;
 }
+.ui-helper-hidden-accessible{
+	display: none;
+}

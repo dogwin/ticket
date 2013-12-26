@@ -28,10 +28,15 @@ $(document).ready(function(){
 							location.href=data.url;
 						}else{
 							//show error
-							$("#msg").html("Username or password incorrect.");
+							$("#errormsg").html("Username or password incorrect.");
 						}
 					}
 			});
+		}
+	});
+	$("body").keydown(function(){
+		if (event.keyCode == "13"){
+			$("#loginbt").click();
 		}
 	});
 	//user edit
@@ -51,15 +56,15 @@ $(document).ready(function(){
 		if(userID>0){
 			//update
 			if(firstName.length<1){
-				$("#errormsg").html('Please input first name');
+				$("#errormsg").html('Please enter your first name.');
 			}else if(lastName.length<1){
-				$("#errormsg").html('Please input last name');
+				$("#errormsg").html('Please enter you last name.');
 			}else if(!re.test(email)){
-				$("#errormsg").html('Please input email');
+				$("#errormsg").html('Please enter correct email adress.');
 			}else if(password.length>0&&password.length<6){
-					$("#errormsg").html('Password at least 6.');
+					$("#errormsg").html('Password must be at least 6 characters.');
 			}else if(password!=repassword){
-					$("#errormsg").html('Repet password not match password.');
+					$("#errormsg").html('Repeat password does not match.');
 			}else{
 				Ido(userID,firstName,lastName,email,phone,password,role);
 			}

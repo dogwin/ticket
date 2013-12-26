@@ -58,7 +58,7 @@ class Report_mdl extends CI_Model{
 					$down = '';
 				}
 				$reportList.='<tr>
-            	<td>'.$this->newID($row->id).'</td>
+            	<td><a href="'.base_url('report/open/'.$row->id).'" class="popup-with-zoom-anim">'.$this->newID($row->id).'</a></td>
                 <td>'.$row->taskTitle.'</td>
                 <td>'.$d.'</td>
                 <td>'.$c.'</td>

@@ -150,6 +150,8 @@ class Post extends CI_Controller{
 						'date'=>time()
 						);
 				$this->admin_mdl->insert('ticketEmail',$emailData);
+				//update userEmail
+				$this->admin_mdl->update('userEmail',array('ticketID'=>$newTicketID),array('id'=>$emailList[$j],'adminAdd'=>1));
 			}
 			/**
 			 * send email
@@ -215,7 +217,7 @@ class Post extends CI_Controller{
 		//print_r($ticketData);
 		//file upload
 		if($newReportID){
-			for($i=1;$i<=5;$i++){
+			/*for($i=1;$i<=5;$i++){
 				$upload_file=$_FILES['file'.$i]['tmp_name'];
 				$upload_file_name=$_FILES['file'.$i]['name'];
 				if($upload_file_name){
@@ -228,7 +230,7 @@ class Post extends CI_Controller{
 					);
 					$this->admin_mdl->insert('reportuploads',$fileData);
 				}
-			}
+			}*/
 			//email
 			for($j=0;$j<count($emailList);$j++){
 				//echo $emailList[$j]."<br>";
@@ -238,6 +240,7 @@ class Post extends CI_Controller{
 						'date'=>time()
 				);
 				$this->admin_mdl->insert('reportEmail',$emailData);
+				$this->admin_mdl->update('userEmail',array('reportID'=>$newReportID),array('id'=>$emailList[$j],'adminAdd'=>1));
 			}
 			
 			/**
@@ -527,6 +530,7 @@ class Post extends CI_Controller{
 		$email = $this->input->post('email');
 		$userID = $this->input->post('userID');
 		$type = $this->input->post('type');
+		$adminAdd = $this->input->post('adminAdd');
 		//check exist in admin_user
 		if($this->admin_mdl->emailExist($email)){
 			//add again
@@ -535,12 +539,13 @@ class Post extends CI_Controller{
 				$array = array('flag'=>false,'msg'=>'The email you added before.');
 			}else{
 				//insert
-				$data = array('userID'=>$userID,'ticketID'=>0,'email'=>$email,'date'=>time());
-				if($this->admin_mdl->insert('userEmail',$data)){
+				$data = array('userID'=>$userID,'ticketID'=>0,'email'=>$email,'adminAdd'=>$adminAdd,'date'=>time());
+				$newEmID = $this->admin_mdl->RinsertID('userEmail',$data); 
+				if($newEmID){
 					if($type==1){
 						$emaillist = $this->admin_mdl->emailList($userID);
-					}else{
-						$emaillist = $this->admin_mdl->vemailList($userID);
+					}else if($type==2){
+						$emaillist = $this->admin_mdl->RenewEmail($newEmID);
 					}
 					$array = array('flag'=>true,'url'=>base_url('admin'),'emaillist'=>$emaillist);
 				}else{

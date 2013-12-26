@@ -83,6 +83,7 @@ $(document).ready(function(){
 	$("#addemailbt").click(function(){
 		var email = $("#key").val();
 		var userID = $("#userID").val();
+		var adminAdd = 0;
 		if(!re.test(email)){
 			$("#errormsg").html("Please input email.");
 		}else{
@@ -94,13 +95,15 @@ $(document).ready(function(){
 				data:{
 					email:email,
 					userID:userID,
-					type:1
+					type:1,
+					adminAdd:adminAdd
 				},
 				success:function(data){
 					console.log(data);	
 					if(data.flag){
 						//location.href=data.url;
 						$(".ld_mail_list").html(data.emaillist+'<div class="clear"></div>');
+						
 						$("#key").val('');
 					}else{
 						//show error
