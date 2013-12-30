@@ -33,6 +33,7 @@ body
 	color:#fff;
 	cursor:pointer;
 	padding:4px 5px;
+	font-family: Helvetica,sans-serif;
 }
 .c01, a.c01
 {
@@ -76,7 +77,7 @@ body
 	line-height:26px;
 	background:url(../images/txt_login.jpg) repeat-x;
 	padding:0 8px 0 5px;
-	color:#4b515f;
+	color:#fff;
 	font-size:16px;
 }
 input.txt_login:placeholder, input::-webkit-input-placeholder
@@ -112,10 +113,6 @@ input.txt_login:placeholder, input::-webkit-input-placeholder
 {
 	height:64px;
 	background-color:#111111;
-}
-#header .main
-{
-	width:956px;
 }
 #logo
 {
@@ -337,6 +334,7 @@ input.txt_login:placeholder, input::-webkit-input-placeholder
 	font-size:12px;
 	border:1px solid #c8ccce;
 	background-color:#f7fcff;
+	font-family: Helvetica,sans-serif;
 }
 .ld_table_urgent a
 {
@@ -699,6 +697,26 @@ input.txt_login:placeholder, input::-webkit-input-placeholder
 {
 	font-size:16px;
 	padding:5px 14px;
+}
+#errormsg
+{
+	color:#ff0000;
+	margin-left:6px;
+}
+.el i
+{
+	float:right;
+	font-style:normal;
+	color:#fff;
+	padding:1px;
+	border-radius:50%;
+	background-color:#ff0000;
+	cursor:pointer;
+	width: 12px;
+	height: 12px;
+	text-align: center;
+	line-height: 12px;
+	margin-top: -12px;
 }
 
 

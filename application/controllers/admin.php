@@ -17,6 +17,7 @@ class Admin extends CI_Controller{
 			//header
 			
 			$data['roleName'] = $this->admin_mdl->RoleName($userInfo->authLevel);
+			$data['ulink'] = base_url('admin/userEdit/'.$userInfo->id);
 			$this->data['header'] = $this->load->view("global/header",$data,true);
 			$this->data['footer'] = $this->load->view("global/footer",$data,true);
 			$this->data['roleName'] = array(1=>'Client',2=>'Agency',3=>'Developer');
@@ -39,6 +40,7 @@ class Admin extends CI_Controller{
 		if($userInfo->authLevel==0){
 			//admin pannel
 			//user list
+			$this->data['allCount'] = $this->admin_mdl->userCounts();
 			$this->data['userList'] = $this->admin_mdl->userList(10,$orderData);
 				
 			$this->load->view("admin/index",$this->data);

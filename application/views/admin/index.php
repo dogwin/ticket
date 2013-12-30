@@ -14,7 +14,9 @@
     	<?php echo $userList;?>
     </ul>
     <input type='hidden' id="loaduser" value=''>
-    <div><input type="button" class="btn_loadmore" value="Load more" onclick='loaddata("<?php echo $orderData;?>")'/></div>
+    <?php if($allCount>10){?>
+    <div><input type="button" class="btn_loadmore" value="Load more" id="loadMore" onclick='loaddata("<?php echo $orderData;?>")'/></div>
+    <?php }?>
 </div>
 <script src="<?php echo base_url();?>dogwinjs/auth" type="text/javascript" language="php"></script>
 <script type="text/javascript">
@@ -48,6 +50,11 @@ function loaddata(orderData){
 				$('#userList li').last().after(data.userlist);
 			},
 			complete:function(data){
+				console.log(page);
+				if(<?php echo $allCount?><=(page*10)){
+					//hide
+					$("#loadMore").hide();
+				}
 				page++;
 			}
 	  });
@@ -70,7 +77,7 @@ function loaddata(orderData){
 				success:function(data){
 					console.log(data);
 					if(data.flag){
-						//locaction.href=data.url;
+						location.href=data.url;
 					}else{
 						alert(data.msg);
 					}

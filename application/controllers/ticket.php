@@ -15,6 +15,7 @@ class Ticket extends CI_Controller{
 			$data['userInfo'] = $this->data['userInfo'] = $userInfo = $this->auth_mdl->getUserInfo();
 			$data['name'] =$userInfo->firstName.".".$userInfo->lastName;
 			//header
+			$data['ulink'] = base_url('admin/userEdit/'.$userInfo->id);
 			$data['roleName'] = $this->admin_mdl->RoleName($userInfo->authLevel);
 			$this->data['header'] = $this->load->view("global/header",$data,true);
 			$this->data['footer'] = $this->load->view("global/footer",$data,true);
@@ -25,6 +26,10 @@ class Ticket extends CI_Controller{
 		$this->loggin();
 		//ticket list
 		$this->data['authLevel'] =  $this->data['userInfo']->authLevel;
+		if($this->data['authLevel']==0){
+			header("location:".base_url('admin'));
+			exit();
+		}
 		$this->data['ticketList'] = $this->admin_mdl->tickets($this->data['userInfo']->id);
 		$this->data['closeTicketList'] = $this->admin_mdl->ticketsClose($this->data['userInfo']->id);
 		$this->load->view("index",$this->data);
@@ -36,6 +41,8 @@ class Ticket extends CI_Controller{
 		$this->data['JobTaskType'] = $this->admin_mdl->JobTaskType();
 		//status
 		$this->data['status'] = $this->admin_mdl->getStatus();
+		//createrEM 
+		$this->data['createrEM'] = $this->data['userInfo']->email;
 		//email list
 		$this->data['emaillist'] = $this->admin_mdl->vemailList($this->data['userInfo']->id,0);
 		//echo $this->data['emaillist'];
@@ -63,7 +70,7 @@ class Ticket extends CI_Controller{
 		$this->data['ticketID'] = $ticketID = $this->uri->segment(3,0);
 		$ticketInfo = $this->admin_mdl->getInfo('ticket',$ticketID);
 		$this->data['emaillist'] = $this->admin_mdl->vemailList($this->data['userInfo']->id,0);
-		
+		$this->data['createrEM'] = $this->data['userInfo']->email;
 		$this->load->view('ticket/golive',$this->data);
 		
 	}

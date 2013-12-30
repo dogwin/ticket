@@ -60,8 +60,8 @@
         </div>
         <?php }?>
     </div>
-    <div><input type="button" class="btn" value="Save" id="userEdit"/></div>
-    <div id="errormsg"></div>
+    <div><input type="button" class="btn" value="Save" id="userEdit"/><span id="errormsg"></span></div>
+    
 </div>
 <!--autocomplete begin  -->
 <script type="text/javascript" src="<?php echo base_url();?>js/ui/jquery.ui.core.js"></script>
@@ -84,6 +84,8 @@ $(document).ready(function(){
 		var email = $("#key").val();
 		var userID = $("#userID").val();
 		var adminAdd = 0;
+		var ticketID = 0;
+		var reportID = 0;
 		if(!re.test(email)){
 			$("#errormsg").html("Please input email.");
 		}else{
@@ -96,7 +98,9 @@ $(document).ready(function(){
 					email:email,
 					userID:userID,
 					type:1,
-					adminAdd:adminAdd
+					adminAdd:adminAdd,
+					ticketID:ticketID,
+					reportID:reportID
 				},
 				success:function(data){
 					console.log(data);	

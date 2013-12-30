@@ -22,7 +22,7 @@ class Admin_mdl extends CI_Model{
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
 				if($row->authLevel!=0){
-					$bt = '<input type="button" class="btn" value="Delete" onclick="delUser('.$row->id.')">';
+					$bt = '<input type="button" class="btn r" value="Delete" onclick="delUser('.$row->id.')">';
 				}else{
 					$bt = '';
 				}
@@ -43,11 +43,11 @@ class Admin_mdl extends CI_Model{
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
 				if($row->authLevel!=0){
-					$bt = '<input type="button" class="btn" value="Delete" onclick="delUser('.$row->id.')">';
+					$bt = '<input type="button" class="btn r" value="Delete" onclick="delUser('.$row->id.')">';
 				}else{
 					$bt = '';
 				}
-				$userList.='<li><a class="name" href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->firstName.' '.$row->lastName.' ('.$this->RoleName($row->authLevel).'</a><a href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->email.'</a>'.$bt.'</li>';
+				$userList.='<li><a class="name" href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->firstName.' '.$row->lastName.' ('.$this->RoleName($row->authLevel).')</a><a href=\''.base_url('admin/userEdit/'.$row->id).'\'>'.$row->email.'</a>'.$bt.'</li>';
 			}
 		}
 		return $userList;
@@ -204,7 +204,7 @@ class Admin_mdl extends CI_Model{
 		if($ticketID){
 			$sql.="ticketID in (0,$ticketID))";
 		}else{
-			$sql.= "ticketID = 0";
+			$sql.= "ticketID = 0 and reportID = 0";
 		}
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
@@ -220,7 +220,7 @@ class Admin_mdl extends CI_Model{
 		if($reportID){
 			$sql.="reportID in (0,$reportID))";
 		}else{
-			$sql.= "reportID = 0";
+			$sql.= "reportID = 0 and ticketID = 0";
 		}
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
@@ -237,12 +237,12 @@ class Admin_mdl extends CI_Model{
 		if($ticketID){
 			$sql.="ticketID in (0,$ticketID))";
 		}else{
-			$sql.= "ticketID = 0";
+			$sql.= "reportID = 0 and ticketID = 0";
 		}
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
-				$emailList .= '<p class="el"><i onclick="emailDel('.$row->id.',this)">X</i><a href="#">'.$row->email.'</a></p>';
+				$emailList .= '<p class="el"><i onclick="emailDel('.$row->id.',this)">x</i><a href="#">'.$row->email.'</a></p>';
 			}
 		}
 		return $emailList;
@@ -269,8 +269,8 @@ class Admin_mdl extends CI_Model{
 		$query = $this->db->query($sql);
 		return $query->num_rows();
 	}
-	function inUseremail($email,$userID){
-		$sql = "select * from userEmail where email='$email' and userID='$userID'";
+	function inUseremail($email,$userID,$ticketID,$reportID){
+		$sql = "select * from userEmail where email='$email' and userID='$userID' and ticketID='$ticketID' and reportID='$reportID'";
 		$query = $this->db->query($sql);
 		return $query->num_rows();
 	}
@@ -404,7 +404,7 @@ class Admin_mdl extends CI_Model{
 		return $query->num_rows();
 	}
 	//
-	function export($status=6){
+	function export($status=0){
 		$sql = "select * from ticket";
 		
 		if($status==6){
@@ -467,6 +467,12 @@ class Admin_mdl extends CI_Model{
 		$sql = "select * from admin_user where id=(select userID from $tb where id='$ID')";
 		$query = $this->db->query($sql);
 		return $query->row();
+	}
+	//user Count
+	function userCounts(){
+		$sql = "select * from admin_user";
+		$query = $this->db->query($sql);
+		return $query->num_rows();
 	}
 	/**
 	 * base db function

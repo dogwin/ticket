@@ -530,16 +530,18 @@ class Post extends CI_Controller{
 		$email = $this->input->post('email');
 		$userID = $this->input->post('userID');
 		$type = $this->input->post('type');
+		$ticketID = $this->input->post('ticketID');
+		$reportID = $this->input->post('reportID');
 		$adminAdd = $this->input->post('adminAdd');
 		//check exist in admin_user
 		if($this->admin_mdl->emailExist($email)){
 			//add again
-			if($this->admin_mdl->inUseremail($email,$userID)){
+			if($this->admin_mdl->inUseremail($email,$userID,$ticketID,$reportID)){
 				//exist
 				$array = array('flag'=>false,'msg'=>'The email you added before.');
 			}else{
 				//insert
-				$data = array('userID'=>$userID,'ticketID'=>0,'email'=>$email,'adminAdd'=>$adminAdd,'date'=>time());
+				$data = array('userID'=>$userID,'ticketID'=>$ticketID,'reportID'=>$reportID,'email'=>$email,'adminAdd'=>$adminAdd,'date'=>time());
 				$newEmID = $this->admin_mdl->RinsertID('userEmail',$data); 
 				if($newEmID){
 					if($type==1){

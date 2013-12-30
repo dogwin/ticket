@@ -25,8 +25,8 @@
                 </th>
                 <td>
                 	Urgent<br />
-                    <p class="ld_table_urgent"><a href="javascript:uv(0);" class="uv" style="border-right:none;">Yes</a><a href="javascript:uv(1);">No</a></p>
-                    <input type="hidden" name="urgent_value" value="0" id="urgent_value" />
+                    <p class="ld_table_urgent"><a href="javascript:uv(0);" style="border-right:none;">Yes</a><a href="javascript:uv(1);" class="uv">No</a></p>
+                    <input type="hidden" name="urgent_value" value="1"  id="urgent_value" />
                 </td>
             </tr>
             <tr>
@@ -82,7 +82,10 @@
         <div class="ld_info">
         	<h3>Live Alert / Notification</h3>
             <div class="ld_mail_list">
+            	<!-- 
             	<p class='el' style='width:0px;height:0px;padding:0;margin:0;border:0px;'></p>
+            	-->
+            	<p class='el'><input type="checkbox" class="emailList" checked disabled><?php echo $createrEM;?></p>
             	<?php echo $emaillist;?>
                 <div class="clear"></div>
             </div>
@@ -117,6 +120,8 @@ $(document).ready(function(){
 		var email = $("#key").val();
 		var userID = $("#userID").val();
 		var adminAdd = 1;
+		var ticketID = 0;
+		var reportID = 0;
 		if(!re.test(email)){
 			$("#errormsg").html("Please input email.");
 		}else{
@@ -129,7 +134,9 @@ $(document).ready(function(){
 					email:email,
 					userID:userID,
 					type:2,
-					adminAdd:adminAdd
+					adminAdd:adminAdd,
+					ticketID:ticketID,
+					reportID:reportID
 				},
 				success:function(data){
 					console.log(data);	

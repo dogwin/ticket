@@ -5,24 +5,6 @@
  * @webSite http://dogwin.net
  */
 ?>
-<!-- 
-<html>
-<head>
-	<title></title>
-	<link type="text/css" rel="stylesheet" href="<?php echo base_url();?>css/style.css">
-	<script type="text/javascript" src='<?php echo base_url("js/jquery-1.10.2.min.js");?>'></script>
-</head>
-<body>
-<ul>
-	<li><a href='<?php echo base_url('ticket');?>'>New ticket</a><li>
-	<li><a href='<?php echo base_url('report'); ?>'>Report Downloads</a><li>
-	<li><a href='<?php echo base_url('admin');?>'>User Management</a><li>
-</ul>
-<div>
-<p>welcome <?php echo $name;?><p>
-<p><a href='<?php echo base_url("ticket/logout")?>'>Logout</a></p>
-</div>
-<div class="clear"></div>-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -70,17 +52,27 @@ function uv(i)
 <body>
 <div id="header">
 	<div class="main">
-    	<div id="logo"><a href="<?php if($userInfo->id==1){ echo "#";}else{ echo base_url('ticket');}?>"><img src="<?php echo base_url();?>images/logo.jpg" alt="logo" width="106" height="54" /></a></div>
+    	<div id="logo">
+    	<?php if($userInfo->authLevel){ ?>
+    	<a href="<?php echo base_url('ticket');?>"><img src="<?php echo base_url();?>images/logo.jpg" alt="logo" width="106" height="54" /></a>
+    	<?php }else{
+    		?>
+    		<img src="<?php echo base_url();?>images/logo.jpg" alt="logo" width="106" height="54" />
+    		<?php 
+    	} ?>
+    	</div>
         <div id="menu">
         	<ul>
-            	<li><a href="<?php if($userInfo->id==1){ echo "#";}else{  echo base_url('report');}?>">Report Downloads</a></li>
+        		<?php if($userInfo->authLevel){?>
+            	<li><a href="<?php echo base_url('report');?>">Report Downloads</a></li>
+                <?php }?>
                 <li><a href="<?php echo base_url('admin');?>"><?php echo $userInfo->authLevel==0?"User Management":"My Account";?></a></li>
             </ul>
         </div>
         <div id="h_login">
         	<div id="defalut_img"><!-- <a href="#"><img src="images/default_img.jpg" alt="" /></a>--></div>
             <div id="h_login_txt">
-            	<p>Welcome <a href="#"><?php echo $name." (".$roleName.")";?></a></p>
+            	<p>Welcome <a href="<?php echo $ulink;?>"><?php echo $name." (".$roleName.")";?></a></p>
                 <p><input type="button" class="btn" value="Logout" onclick="location.href='<?php echo base_url("ticket/logout")?>'"/></p>
             </div>
         </div>

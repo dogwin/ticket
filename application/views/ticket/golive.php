@@ -9,6 +9,7 @@
         <div class="ld_info">
         	<h3>Live Alert / Notification</h3>
             <div class="ld_mail_list">
+            	<p class='el'><input type="checkbox" class="emailList" checked disabled><?php echo $createrEM;?></p>
             	<?php echo $emaillist;?>
                 <div class="clear"></div>
             </div>

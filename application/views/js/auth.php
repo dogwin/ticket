@@ -34,8 +34,9 @@ $(document).ready(function(){
 			});
 		}
 	});
-	$("body").keydown(function(){
-		if (event.keyCode == "13"){
+	
+	$("body").keydown(function(e){
+		if (e.keyCode == "13"){
 			$("#loginbt").click();
 		}
 	});
@@ -56,29 +57,33 @@ $(document).ready(function(){
 		if(userID>0){
 			//update
 			if(firstName.length<1){
-				$("#errormsg").html('Please enter your first name.');
+				$("#errormsg").html('Please enter a first name.');
 			}else if(lastName.length<1){
-				$("#errormsg").html('Please enter you last name.');
+				$("#errormsg").html('Please enter a last name.');
 			}else if(!re.test(email)){
-				$("#errormsg").html('Please enter correct email adress.');
+				$("#errormsg").html('Please enter a valid email address.');
+			}else if(phone.length<1){
+				$("#errormsg").html('Please enter a valid phone number.');
 			}else if(password.length>0&&password.length<6){
-					$("#errormsg").html('Password must be at least 6 characters.');
+					$("#errormsg").html('Please enter a password.');
 			}else if(password!=repassword){
-					$("#errormsg").html('Repeat password does not match.');
+					$("#errormsg").html('The passwords you have entered don\'t match.');
 			}else{
 				Ido(userID,firstName,lastName,email,phone,password,role);
 			}
 		}else{
 			if(firstName.length<1){
-				$("#errormsg").html('Please input first name');
+				$("#errormsg").html('Please enter a first name.');
 			}else if(lastName.length<1){
-				$("#errormsg").html('Please input last name');
+				$("#errormsg").html('Please enter a last name');
 			}else if(!re.test(email)){
-				$("#errormsg").html('Please input email');
+				$("#errormsg").html('Please enter a valid email address.');
+			}else if(phone.length<1){
+				$("#errormsg").html('Please enter a valid phone number.');
 			}else if(password.length<6){
-				$("#errormsg").html('Password at least 6.');
+				$("#errormsg").html('Please enter a password.');
 			}else if(password!=repassword){
-				$("#errormsg").html('Repet password not match password.');
+				$("#errormsg").html('The passwords you have entered don\'t match.');
 			}else{
 				Ido(userID,firstName,lastName,email,phone,password,role);
 			}
