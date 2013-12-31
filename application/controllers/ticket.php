@@ -30,9 +30,64 @@ class Ticket extends CI_Controller{
 			header("location:".base_url('admin'));
 			exit();
 		}
-		$this->data['ticketList'] = $this->admin_mdl->tickets($this->data['userInfo']->id);
-		$this->data['closeTicketList'] = $this->admin_mdl->ticketsClose($this->data['userInfo']->id);
+		
+		/*$this->load->library('pagination');
+		$config['base_url'] = base_url('ticket/index');
+		$config['total_rows'] = $this->admin_mdl->ticketAC();
+		$config['per_page'] = 5;
+		$config['uri_segment'] = 3;
+		
+		$this->pagination->initialize($config);
+		$opage = $this->uri->segment(3,0);
+		$per_page = $config['per_page'];
+		$this->data['ticketList'] = $this->admin_mdl->tickets($this->data['userInfo']->id,$opage,$per_page);
+		$this->data['navOpen'] = $this->pagination->create_links();
+		//open end
+		//close begin
+		
+		$cconfig['base_url'] = base_url('ticket/index/0');
+		$cconfig['total_rows'] = $this->admin_mdl->closeticketAC($this->data['userInfo']->id);
+		$cconfig['per_page'] = 1;
+		$cconfig['uri_segment'] = 4;
+		
+		$this->pagination->initialize($cconfig);
+		$page = $this->uri->segment(4,0);
+		
+		
+		$per_page = $cconfig['per_page'];
+		
+		$this->data['closeTicketList'] = $this->admin_mdl->ticketsClose($this->data['userInfo']->id,$page,$per_page);
+		$this->data['navClose'] = $this->pagination->create_links();*/
+		//close end
 		$this->load->view("index",$this->data);
+	}
+	function navOpen(){
+		$this->load->library('pagination');
+		$config['base_url'] = base_url('ticket/navOpen');
+		$config['total_rows'] = $this->admin_mdl->ticketAC();
+		$config['per_page'] = 5;
+		$config['uri_segment'] = 3;
+		
+		$this->pagination->initialize($config);
+		$opage = $this->uri->segment(3,0);
+		$per_page = $config['per_page'];
+		$this->data['ticketList'] = $this->admin_mdl->tickets($this->data['userInfo']->id,$opage,$per_page);
+		$this->data['navOpen'] = $this->pagination->create_links();
+		//open end
+		$this->load->view('ticket/navOpen',$this->data);
+	}
+	function navClose(){
+		$this->load->library('pagination');
+		$cconfig['base_url'] = base_url('ticket/navClose');
+		$cconfig['total_rows'] = $this->admin_mdl->closeticketAC($this->data['userInfo']->id);
+		$cconfig['per_page'] = 5;
+		$cconfig['uri_segment'] = 3;
+		$this->pagination->initialize($cconfig);
+		$page = $this->uri->segment(3,0);
+		$per_page = $cconfig['per_page'];	
+		$this->data['closeTicketList'] = $this->admin_mdl->ticketsClose($this->data['userInfo']->id,$page,$per_page);
+		$this->data['navClose'] = $this->pagination->create_links();
+		$this->load->view('ticket/navClose',$this->data);
 	}
 	//edit ticket
 	function edit(){

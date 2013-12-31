@@ -275,10 +275,10 @@ class Admin_mdl extends CI_Model{
 		return $query->num_rows();
 	}
 	//
-	function tickets($userID){
+	function tickets($userID,$page,$per_page){
 		$ticketList = "";
 		//$sql = "select * from ticket where userID='$userID' and status!=6";
-		$sql = "select * from ticket where status!=6";
+		$sql = "select * from ticket where status!=6 order by id desc limit $page,$per_page";
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
@@ -304,10 +304,15 @@ class Admin_mdl extends CI_Model{
 		}
 		return $ticketList;
 	}
-	function ticketsClose($userID){
+	function ticketAC(){
+		$sql = "select * from ticket where status!=6";
+		$query = $this->db->query($sql);
+		return $query->num_rows();
+	}
+	function ticketsClose($userID,$page,$per_page){
 		$ticketList = "";
 		//$sql = "select * from ticket where userID='$userID' and status=6";
-		$sql = "select * from ticket where status=6";
+		$sql = "select * from ticket where status=6 order by id desc limit $page,$per_page";
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
@@ -323,6 +328,11 @@ class Admin_mdl extends CI_Model{
 			}
 		}
 		return $ticketList;
+	}
+	function closeticketAC(){
+		$sql = "select * from ticket where status=6";
+		$query = $this->db->query($sql);
+		return $query->num_rows();
 	}
 	function newID($id){
 		$idlen = strlen($id);

@@ -71,7 +71,7 @@
             </p>
         </div>
         <div class="ld_p02">
-        	<input type="radio" name="datetype" value='1'/>Or Choose Date
+        	<input type="radio" name="datetype" id="ChooseDate" value='1'/>Or Choose Date
             <p>
             	<input type="text" id="standard" name="standard"/>
             	<!-- 
@@ -96,7 +96,7 @@
         
         <div class="ld_control">
         <div id="msg"></div>
-        <input type="button" value="Save" id="save" class="btn" /><input type="button" value="Cancel Ticket" class="btn" /></div>
+        <input type="button" value="Save" id="save" class="btn" /><input id="closebt" type="button" value="Cancel Ticket" class="btn" /></div>
     </div>
     </form>
 </div>
@@ -106,6 +106,7 @@
 <script type="text/javascript" src="<?php echo base_url();?>js/ui/jquery.ui.position.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>js/ui/jquery.ui.menu.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>js/ui/jquery.ui.autocomplete.js"></script>
+<script type="text/javascript" src="<?php echo base_url();?>js/jquery/jquery-ui.js?ver=1.10.3"></script>
 <script>
 $(document).ready(function(){
 	$("#key").autocomplete({
@@ -115,6 +116,7 @@ $(document).ready(function(){
 	});
 	var re = /\S+@\S+\.\S+/;
 	$("#addemailbt").click(function(){
+		$("#errormsg").html('');
 		var email = $("#key").val();
 		var userID = $("#userID").val();
 		var adminAdd = 1;
@@ -192,6 +194,20 @@ $(document).ready(function(){
 		event.preventDefault();
 	});
 	*/
+	
+	$("#standard").datepicker({
+		showOn: "both",
+		dateFormat: 'yy-mm-dd',
+		buttonImage: "<?php echo base_url();?>images/calendar.png",
+		changeMonth: true,
+		changeYear: true,
+		beforeShow:function(){
+			$("#ChooseDate").click();
+		}
+	});
+	$("#closebt").click(function(){
+		$(".mfp-close").click();
+	});
 });
 </script>
 <?php

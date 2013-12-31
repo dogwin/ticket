@@ -13,34 +13,12 @@
     	<a href="<?php echo base_url('report/edit/0');?>" class="btn popup-with-zoom-anim">New Report Request</a><h2>Reports Requested</h2>
     	<?php }?>
     	</div>
-        <table cellpadding="0" cellspacing="0" border="0" class="c_table">
-        	<tr>
-            	<th width="82">Ticket Number</th>
-                <th>Title</th>
-                <th>Request submitted <br />(date)</th>
-                <th>Days remaining<br />(+/-days fm request)</th>
-                <th>Additional requests <br />made? (Y/N)</th>
-                <th>Escalate/Add <br />request</th>
-                <th width="120">Status</th>
-                <th width="223">Website</th>
-            </tr>
-            <?php echo $reportList;?>
-        </table>
+        <iframe id='openT' src="<?php echo base_url('report/navOpen');?>" width="100%" scrolling="no" frameborder="0"></iframe>
         <div class="center_control"><a href="<?php echo base_url('report/openexport');?>" class="btn">Export to Excel</a></div>
     </div>
     <div class="r_main">
     	<div class="center_control"><h2>Reports for Download</h2></div>
-        <table cellpadding="0" cellspacing="0" border="0" class="c_table">
-        	<tr>
-            	<th width="82">Ticket Number</th>
-                <th>Title</th>
-                <th>Request submitted <br />(date)</th>
-                <th>Days remaining<br />(+/-days fm request)</th>
-                <th>Additional requests <br />made? (Y/N)</th>
-                <th>Reports</th>
-            </tr>
-            <?php echo $closereportList;?>
-        </table>
+        <iframe id='closeT' src="<?php echo base_url('report/navClose');?>" width="100%" scrolling="no" frameborder="0"></iframe>
         <div class="center_control"><a href="<?php echo base_url('report/closeexport');?>" class="btn">Export to Excel</a></div>
     </div>
 </div>

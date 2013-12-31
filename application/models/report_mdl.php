@@ -10,10 +10,10 @@ class Report_mdl extends CI_Model{
 		$this->load->database();
 	}
 	//Reports Requested
-	function reports($userID){
+	function reports($userID,$page,$per_page){
 		$reportList = "";
 		//$sql = "select * from report where userID='$userID' and status!=6";
-		$sql = "select * from report where status!=6";
+		$sql = "select * from report where status!=6  order by id desc limit $page,$per_page";
 		$query = $this->db->query($sql);
 		
 		if($query->num_rows()){
@@ -40,12 +40,16 @@ class Report_mdl extends CI_Model{
 		}
 		return $reportList;
 	}
-	
+	function reportAC(){
+		$sql = "select * from report where status!=6";
+		$query = $this->db->query($sql);
+		return $query->num_rows();
+	}
 	//Reports for Download
-	function reportsClose($userID){
+	function reportsClose($userID,$page,$per_page){
 		$reportList = "";
 		//$sql = "select * from report where userID='$userID' and status=6";
-		$sql = "select * from report where status=6";
+		$sql = "select * from report where status=6  order by id desc limit $page,$per_page";
 		$query = $this->db->query($sql);
 		if($query->num_rows()){
 			foreach ($query->result() as $row){
@@ -55,7 +59,7 @@ class Report_mdl extends CI_Model{
 				if($row->file){
 					$down = '<a href="'.base_url('post/reportdownload/'.$row->id).'" class="btn">Download</a>';
 				}else{
-					$down = '';
+					$down = '&nbsp';
 				}
 				$reportList.='<tr>
             	<td><a href="'.base_url('report/open/'.$row->id).'" class="popup-with-zoom-anim">'.$this->newID($row->id).'</a></td>
@@ -69,7 +73,11 @@ class Report_mdl extends CI_Model{
 		}
 		return $reportList;
 	}
-	
+	function closereportAC(){
+		$sql = "select * from report where status=6";
+		$query = $this->db->query($sql);
+		return $query->num_rows();
+	}
 	function newID($id){
 		$idlen = strlen($id);
 		if($idlen<5){
@@ -78,7 +86,7 @@ class Report_mdl extends CI_Model{
 		}else{return $id;}
 	}
 	function statusArr($key){
-		$SArr = array(1=>'Open',2=>'In progress',3=>'Internal Review',4=>'Client Review',5=>'Approved',6=>'Closed');
+		$SArr = array(0=>'',1=>'Open',2=>'In progress',3=>'Internal Review',4=>'Client Review',5=>'Approved',6=>'Closed');
 		return $SArr[$key];
 	}
 	//get info
@@ -87,17 +95,17 @@ class Report_mdl extends CI_Model{
 		$query = $this->db->query($sql);
 		return $query->row();
 	}
-	function export($status=6){
+	function export($status=0){
 		$sql = "select * from report";
 	
 		if($status==6){
 			$sql.=" where status=6";
 			$exportlist="Ticket Number,Title,Request submitted (date),Days remaining (+/-days fm request),Additional requests made? (Y/N)\n";
-			$filename = 'Closed Ticket '.date('Y-m-d').".csv";
+			$filename = 'Closed Reports '.date('Y-m-d').".csv";
 		}else{
 			$sql.=" where status!=6";
 			$exportlist = "Ticket Number,Title,Request submitted (date),Days remaining(+\/-days fm request),Additional requests made? (Y\/N),Escalate/Add request,Status,Website\n";
-			$filename = 'Open Tickets '.date('Y-m-d').".csv";
+			$filename = 'Open Reports '.date('Y-m-d').".csv";
 		}
 		$query = $this->db->query($sql);
 		if($query->num_rows()){

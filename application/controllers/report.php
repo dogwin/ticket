@@ -24,9 +24,37 @@ class Report extends CI_Controller{
 	function index(){
 		$this->loggin();
 		$this->data['authLevel'] =  $this->data['userInfo']->authLevel;
-		$this->data['reportList'] = $this->report_mdl->reports($this->data['userInfo']->id);
-		$this->data['closereportList'] = $this->report_mdl->reportsClose($this->data['userInfo']->id);
+		//$this->data['reportList'] = $this->report_mdl->reports($this->data['userInfo']->id);
+		//$this->data['closereportList'] = $this->report_mdl->reportsClose($this->data['userInfo']->id);
 		$this->load->view('report/index',$this->data);
+	}
+	function navOpen(){
+		$this->load->library('pagination');
+		$config['base_url'] = base_url('report/navOpen');
+		$config['total_rows'] = $this->report_mdl->reportAC();
+		$config['per_page'] = 5;
+		$config['uri_segment'] = 3;
+		
+		$this->pagination->initialize($config);
+		$page = $this->uri->segment(3,0);
+		$per_page = $config['per_page'];
+		$this->data['reportList'] = $this->report_mdl->reports($this->data['userInfo']->id,$page,$per_page);
+		$this->data['navOpen'] = $this->pagination->create_links();
+		//open end
+		$this->load->view('report/navOpen',$this->data);
+	}
+	function navClose(){
+		$this->load->library('pagination');
+		$cconfig['base_url'] = base_url('ticket/navClose');
+		$cconfig['total_rows'] = $this->report_mdl->closereportAC($this->data['userInfo']->id);
+		$cconfig['per_page'] = 5;
+		$cconfig['uri_segment'] = 3;
+		$this->pagination->initialize($cconfig);
+		$page = $this->uri->segment(3,0);
+		$per_page = $cconfig['per_page'];
+		$this->data['closereportList'] = $this->report_mdl->reportsClose($this->data['userInfo']->id,$page,$per_page);
+		$this->data['navClose'] = $this->pagination->create_links();
+		$this->load->view('report/navClose',$this->data);
 	}
 	//edit ticket
 	function edit(){

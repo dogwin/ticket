@@ -16,6 +16,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=10" />
 <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
+<link type="text/css" href="<?php echo base_url();?>css/jquery-ui.css" rel="stylesheet" />
 <link type="text/css" href="<?php echo base_url();?>css/style.css" rel="stylesheet" />
 <link type="text/css" href="<?php echo base_url();?>css/magnific-popup.css" rel="stylesheet" />
 <link href="<?php echo base_url();?>css/jquery.ui.autocomplete.css" rel="stylesheet" type="text/css" />

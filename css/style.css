@@ -79,11 +79,13 @@ body
 	padding:0 8px 0 5px;
 	color:#fff;
 	font-size:16px;
+	font-family: Helvetica,sans-serif;
 }
 input.txt_login:placeholder, input::-webkit-input-placeholder
 {
 	color:#4b515f;
 	font-weight:lighter;
+	font-family: Helvetica,sans-serif;
 }
 .btn_login
 {
@@ -94,6 +96,7 @@ input.txt_login:placeholder, input::-webkit-input-placeholder
 	color:#fff;
 	float:right;
 	cursor:pointer;
+	font-family: Helvetica,sans-serif;
 }
 .checkbox_login
 {
@@ -660,6 +663,7 @@ input.txt_login:placeholder, input::-webkit-input-placeholder
 	font-size:18px;
 	font-weight:bold;
 	margin-top:35px;
+	font-family: Helvetica,sans-serif;
 }
 
 /*peasonal*/
@@ -717,6 +721,13 @@ input.txt_login:placeholder, input::-webkit-input-placeholder
 	text-align: center;
 	line-height: 12px;
 	margin-top: -12px;
+}
+
+.ui-datepicker-trigger
+{
+	border:none;
+	background:none;
+	cursor:pointer;
 }
 
 
